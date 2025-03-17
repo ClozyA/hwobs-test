@@ -22,12 +22,12 @@ jobs:
         run: |
           # 下载适合系统架构的 obsutil 工具
           wget https://obs-community.obs.cn-north-1.myhuaweicloud.com/obsutil/current/obsutil_linux_amd64.tar.gz
-          # 解压安装包
-          tar -xzvf obsutil_linux_amd64.tar.gz
-          # 设置可执行权限，确保路径指向解压后的 obsutil 文件
-          chmod 755 obsutil_linux_amd64_5.5.12/obsutil
+          # 解压到当前目录，去掉路径中的一级目录结构
+          tar -xzvf obsutil_linux_amd64.tar.gz --strip-components=1
+          # 设置可执行权限
+          chmod 755 obsutil
           # 验证安装是否成功
-          ./obsutil_linux_amd64_5.5.12/obsutil version
+          ./obsutil version
 
       - name: Upload file to Huawei OBS
         env:
@@ -37,9 +37,9 @@ jobs:
           OBS_BUCKET: ${{ secrets.OBS_BUCKET }}
         run: |
           # 配置 obsutil
-          ./obsutil_linux_amd64_5.5.12/obsutil config -i $OBS_AK -k $OBS_SK -e $OBS_ENDPOINT
+          ./obsutil config -i $OBS_AK -k $OBS_SK -e $OBS_ENDPOINT
           # 上传文件到 OBS 存储桶
-          ./obsutil_linux_amd64_5.5.12/obsutil cp test_file.bin obs://$OBS_BUCKET/test_file.bin
+          ./obsutil cp test_file.bin obs://$OBS_BUCKET/test_file.bin
 
       - name: Clean up
         run: |
