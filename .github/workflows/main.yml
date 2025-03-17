@@ -16,12 +16,12 @@ jobs:
       - name: Download a 50MB file
         run: |
           # 下载一个50MB的文件，用于测试
-          wget https://dldir1.qq.com/qqfile/qq/PCQQ9.7.17/QQ9.7.17.29225.exe -O test_file.bin
+          wget http://hkg.download.datapacket.com/100mb.bin -O test_file.bin
 
       - name: Install obsutil
         run: |
           # 安装 obsutil 工具（上传到华为云 OBS 使用）
-          wget https://obs.cn-north-4.myhuaweicloud.com/obsutil/latest/obsutil_linux_amd64 -O obsutil
+          wget https://obs-community.obs.cn-north-1.myhuaweicloud.com/obsutil/current/obsutil_linux_amd64.tar.gz -O obsutil
           chmod +x obsutil
           sudo mv obsutil /usr/local/bin/obsutil
 
