@@ -47,7 +47,7 @@ jobs:
           ./obsutil config -i $OBS_AK -k $OBS_SK -e $OBS_ENDPOINT
           
           # 上传 /test/ 目录下的所有文件
-          ./obsutil cp test/ obs://$OBS_BUCKET/test/ -r
+          ./obsutil cp test/ obs://$OBS_BUCKET/test/ -r -f
 
       - name: Clean up
         run: |
