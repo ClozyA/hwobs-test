@@ -13,23 +13,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download a 50MB file
+      - name: Prepare test files
         run: |
-          # 下载一个50MB的文件，用于测试
-          wget http://hkg.download.datapacket.com/100mb.bin -O test_file.bin
+          # 创建 /test/ 目录
+          mkdir -p test
+          
+          # 下载两个测试文件
+          wget http://hkg.download.datapacket.com/100mb.bin -O test/file1.bin
+          wget http://hkg.download.datapacket.com/100mb.bin -O test/file2.bin
 
       - name: Install obsutil
         run: |
           # 下载适合系统架构的 obsutil 工具
           wget https://obs-community.obs.cn-north-1.myhuaweicloud.com/obsutil/current/obsutil_linux_amd64.tar.gz
+          
           # 解压到当前目录，去掉路径中的一级目录结构
           tar -xzvf obsutil_linux_amd64.tar.gz --strip-components=1
+          
           # 设置可执行权限
           chmod 755 obsutil
+          
           # 验证安装是否成功
           ./obsutil version
 
-      - name: Upload file to Huawei OBS
+      - name: Upload files to Huawei OBS
         env:
           OBS_AK: ${{ secrets.OBS_AK }}
           OBS_SK: ${{ secrets.OBS_SK }}
@@ -38,10 +45,11 @@ jobs:
         run: |
           # 配置 obsutil
           ./obsutil config -i $OBS_AK -k $OBS_SK -e $OBS_ENDPOINT
-          # 上传文件到 OBS 存储桶
-          ./obsutil cp test_file.bin obs://$OBS_BUCKET/test_file.bin
+          
+          # 上传 /test/ 目录下的所有文件
+          ./obsutil cp test/ obs://$OBS_BUCKET/test/ -r
 
       - name: Clean up
         run: |
-          # 删除测试文件
-          rm -f test_file.bin
+          # 删除测试文件夹
+          rm -rf test
