@@ -16,7 +16,7 @@ jobs:
       - name: Download a 50MB file
         run: |
           # 下载一个50MB的文件，用于测试
-          wget https://speed.cloudflare.com/__down?during=download&bytes=104857600 -O test_file.bin
+          wget https://dldir1.qq.com/qqfile/qq/PCQQ9.7.17/QQ9.7.17.29225.exe -O test_file.bin
 
       - name: Install obsutil
         run: |
