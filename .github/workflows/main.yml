@@ -1,0 +1,43 @@
+name: Download and Upload to Huawei OBS
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  download_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download a 50MB file
+        run: |
+          # 下载一个50MB的文件，用于测试
+          wget https://speed.cloudflare.com/__down?during=download&bytes=104857600 -O test_file.bin
+
+      - name: Install obsutil
+        run: |
+          # 安装 obsutil 工具（上传到华为云 OBS 使用）
+          wget https://obs.cn-north-4.myhuaweicloud.com/obsutil/latest/obsutil_linux_amd64 -O obsutil
+          chmod +x obsutil
+          sudo mv obsutil /usr/local/bin/obsutil
+
+      - name: Upload file to Huawei OBS
+        env:
+          OBS_AK: ${{ secrets.OBS_AK }}
+          OBS_SK: ${{ secrets.OBS_SK }}
+          OBS_ENDPOINT: ${{ secrets.OBS_ENDPOINT }}
+          OBS_BUCKET: ${{ secrets.OBS_BUCKET }}
+        run: |
+          # 配置 obsutil
+          obsutil config -i $OBS_AK -k $OBS_SK -e $OBS_ENDPOINT
+          # 上传文件到 OBS 存储桶
+          obsutil cp test_file.bin obs://$OBS_BUCKET/test_file.bin
+
+      - name: Clean up
+        run: |
+          # 删除测试文件
+          rm -f test_file.bin
